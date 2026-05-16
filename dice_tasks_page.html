@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>D6 задачі для гуртка програмування</title>
+  <style>
+    :root {
+      --bg: #10131a;
+      --panel: #171c26;
+      --panel-light: #202738;
+      --text: #f3f5f9;
+      --muted: #aab3c5;
+      --accent: #7c5cff;
+      --accent-2: #35d0ba;
+      --danger: #ff5c7a;
+      --warning: #ffd166;
+      --border: rgba(255, 255, 255, 0.12);
+      --shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scrollbar-color: rgba(124, 92, 255, 0.75) rgba(255, 255, 255, 0.06);
+      scrollbar-width: thin;
+    }
+
+    ::-webkit-scrollbar {
+      width: 12px;
+      height: 12px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 999px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, var(--accent), #5b8cff);
+      border: 3px solid #171c26;
+      border-radius: 999px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, #9279ff, #6d9cff);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(124, 92, 255, 0.25), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(53, 208, 186, 0.18), transparent 30%),
+        var(--bg);
+      color: var(--text);
+    }
+
+    .page {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 48px;
+    }
+
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: flex-start;
+      margin-bottom: 28px;
+    }
+
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: clamp(28px, 4vw, 46px);
+      line-height: 1.05;
+    }
+
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 720px;
+      font-size: 16px;
+      line-height: 1.55;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: flex-end;
+      min-width: 230px;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+      color: var(--text);
+      font-weight: 700;
+      border-radius: 14px;
+      padding: 12px 16px;
+      background: var(--panel-light);
+      transition: 0.18s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      background: #2a3348;
+    }
+
+    .toggle-btn {
+      background: linear-gradient(135deg, var(--accent), #5b8cff);
+      box-shadow: 0 10px 26px rgba(124, 92, 255, 0.25);
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 20px;
+      max-height: calc(100vh - 40px);
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.06);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .sidebar h2 {
+      margin: 0 0 12px;
+      font-size: 14px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .tabs {
+      display: grid;
+      gap: 10px;
+      max-height: calc(100vh - 110px);
+      overflow-y: auto;
+      padding-right: 6px;
+      scrollbar-color: rgba(124, 92, 255, 0.75) rgba(255, 255, 255, 0.05);
+      scrollbar-width: thin;
+    }
+
+    .tab {
+      width: 100%;
+      text-align: left;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
+      line-height: 1.3;
+    }
+
+    .tab.active {
+      color: var(--text);
+      background: var(--accent);
+      border-color: transparent;
+    }
+
+    .set-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+      padding: 18px 20px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    .set-info h2 {
+      margin: 0 0 6px;
+      font-size: 22px;
+    }
+
+    .set-info p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .legend {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(42px, 1fr));
+      gap: 6px;
+      min-width: 300px;
+    }
+
+    .legend span {
+      text-align: center;
+      font-size: 13px;
+      padding: 8px 6px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.07);
+      color: var(--muted);
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .card {
+      position: relative;
+      min-height: 170px;
+      padding: 18px;
+      border-radius: 24px;
+      background: linear-gradient(145deg, var(--panel), #121722);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .expanded .card {
+      aspect-ratio: auto;
+      min-height: 330px;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: auto -30px -50px auto;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: rgba(124, 92, 255, 0.18);
+    }
+
+    .card.roll-6::before {
+      background: rgba(53, 208, 186, 0.22);
+    }
+
+    .card.roll-1::before {
+      background: rgba(255, 92, 122, 0.22);
+    }
+
+    .top-row {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .roll {
+      display: grid;
+      place-items: center;
+      flex: 0 0 46px;
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      font-size: 24px;
+      font-weight: 900;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border);
+    }
+
+    .roll-6 .roll {
+      color: var(--accent-2);
+    }
+
+    .roll-1 .roll {
+      color: var(--danger);
+    }
+
+    .difficulty {
+      position: relative;
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .title {
+      position: relative;
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.15;
+    }
+
+    .details {
+      position: relative;
+      display: none;
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.48;
+    }
+
+    .expanded .details {
+      display: block;
+    }
+
+    .details strong {
+      color: var(--text);
+    }
+
+    .details pre {
+      white-space: pre-wrap;
+      margin: 8px 0 0;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(0, 0, 0, 0.24);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #e9edf7;
+      font-family: Consolas, Monaco, monospace;
+      font-size: 13px;
+    }
+
+    .empty-example {
+      color: #778197;
+      font-style: italic;
+    }
+
+    @media (max-width: 980px) {
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+        max-height: none;
+      }
+
+      .tabs {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        max-height: none;
+        overflow: visible;
+        padding-right: 0;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .hero,
+      .set-info {
+        flex-direction: column;
+      }
+
+      .controls {
+        justify-content: flex-start;
+      }
+
+      .legend {
+        width: 100%;
+        min-width: 0;
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .tabs {
+        grid-template-columns: 1fr;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div>
+        <h1>D6 задачі для програмування</h1>
+        <p>Кинув кубик — отримав задачу. 6 означає джекпот і найпростішу задачу, 1 — критпровал і комбінований міні-босфайт.</p>
+      </div>
+      <div class="controls">
+        <button class="toggle-btn" id="toggleExpand">Розгорнути картки</button>
+      </div>
+    </section>
+
+    <div class="workspace">
+      <aside class="sidebar" aria-label="Набори задач">
+        <h2>Набори задач</h2>
+        <nav class="tabs" id="tabs"></nav>
+      </aside>
+
+      <div class="content">
+        <section class="set-info">
+          <div>
+            <h2 id="setTitle"></h2>
+            <p id="setDescription"></p>
+          </div>
+          <div class="legend" aria-label="Легенда складності">
+            <span>6 — джекпот</span>
+            <span>5 — легко</span>
+            <span>4 — норм</span>
+            <span>3 — середньо</span>
+            <span>2 — важко</span>
+            <span>1 — босфайт</span>
+          </div>
+        </section>
+
+        <section class="cards" id="cards"></section>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const taskSets = {{ task_sets | tojson }};
+
+    const tabsEl = document.getElementById("tabs");
+    const cardsEl = document.getElementById("cards");
+    const setTitleEl = document.getElementById("setTitle");
+    const setDescriptionEl = document.getElementById("setDescription");
+    const toggleBtn = document.getElementById("toggleExpand");
+
+    let activeSetIndex = 0;
+    let expanded = false;
+
+    function renderTabs() {
+      tabsEl.innerHTML = "";
+
+      taskSets.forEach((set, index) => {
+        const button = document.createElement("button");
+        button.className = `tab ${index === activeSetIndex ? "active" : ""}`;
+        button.textContent = `Набір ${index + 1}: ${set.title}`;
+        button.addEventListener("click", () => {
+          activeSetIndex = index;
+          render();
+        });
+        tabsEl.appendChild(button);
+      });
+    }
+
+    function renderCards() {
+      const currentSet = taskSets[activeSetIndex];
+      cardsEl.className = `cards ${expanded ? "expanded" : ""}`;
+      cardsEl.innerHTML = "";
+
+      currentSet.tasks.forEach((task) => {
+        const article = document.createElement("article");
+        article.className = `card roll-${task.roll}`;
+
+        article.innerHTML = `
+          <div>
+            <div class="top-row">
+              <div>
+                <p class="difficulty">${task.level}</p>
+                <h3 class="title">${task.title}</h3>
+              </div>
+              <div class="roll">${task.roll}</div>
+            </div>
+            <div class="details">
+              <p><strong>Умова:</strong> ${task.condition}</p>
+              <p><strong>Приклад:</strong></p>
+              <pre>${task.example || "Приклад не задано"}</pre>
+            </div>
+          </div>
+        `;
+
+        cardsEl.appendChild(article);
+      });
+    }
+
+    function render() {
+      const currentSet = taskSets[activeSetIndex];
+      setTitleEl.textContent = currentSet.title;
+      setDescriptionEl.textContent = currentSet.description;
+      toggleBtn.textContent = expanded ? "Згорнути картки" : "Розгорнути картки";
+      renderTabs();
+      renderCards();
+    }
+
+    toggleBtn.addEventListener("click", () => {
+      expanded = !expanded;
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>
